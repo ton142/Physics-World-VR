@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2017
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhysicsWorldX", "PhysicsWorldX.csproj", "{B61D5933-9A82-0D6A-1DBD-F66E89018591}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhysicsWorldX.Editor", "PhysicsWorldX.Editor.csproj", "{2C434B60-513D-29A1-33E7-2DF0CC1E58DD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B61D5933-9A82-0D6A-1DBD-F66E89018591}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B61D5933-9A82-0D6A-1DBD-F66E89018591}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B61D5933-9A82-0D6A-1DBD-F66E89018591}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B61D5933-9A82-0D6A-1DBD-F66E89018591}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C434B60-513D-29A1-33E7-2DF0CC1E58DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C434B60-513D-29A1-33E7-2DF0CC1E58DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C434B60-513D-29A1-33E7-2DF0CC1E58DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C434B60-513D-29A1-33E7-2DF0CC1E58DD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
