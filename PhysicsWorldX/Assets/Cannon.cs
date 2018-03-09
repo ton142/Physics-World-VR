@@ -7,7 +7,11 @@ public class Cannon : MonoBehaviour
 
     public GameObject ballPrefab; // the prefab of the ball spawned everytime
     public GameObject ballSpawnPoint; // the parent of the ball object where the ball will spawn
-    public Vector3 endOfCannon; // the world space position the ball leaves the cannon
+    public GameObject ballExitPoint;
+
+    public GameObject cannonHandle;
+    
+    private Vector3 endOfCannon; // the world space position the ball leaves the cannon
 
     public GameObject cannonPivot; // the point that acts as the pivot for the cannon
 
@@ -51,6 +55,8 @@ public class Cannon : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        endOfCannon = ballExitPoint.transform.position;
+
         //slingshotStartPosition = slingshotGameObject.transform.position; // records the position of the slingshot when the game first starts
     }
 
@@ -76,7 +82,7 @@ public class Cannon : MonoBehaviour
             var device = SteamVR_Controller.Input((int)trackedController.index);
             if (controllerInCannonHandle)
             {
-                /*
+                
                 shootDirection = (endOfCannon - currentBall.transform.position); // the direction the ball flies out at
                 shootVelocity = (BASE_VELOCITY * shootDirection.magnitude); // the velocity the ball will fly out at
                 
@@ -96,13 +102,14 @@ public class Cannon : MonoBehaviour
                     rigidbody.velocity = shootDirection * shootVelocity;
                     rigidbody.useGravity = true;
 
-                } */
+                } 
 
-                // if we press the controller trigger, the cannon will pivot around our controller
-                else if (device.GetTouch(SteamVR_Controller.ButtonMask.Trigger))
+                // if we press the controller trigger, the handle will follow our controller
+                if (device.GetTouch(SteamVR_Controller.ButtonMask.Trigger))
                 {
-                    // *** REWRITE THIS CODE ***
-                    cannonPivot.transform.LookAt(trackedController.transform.position); // the cannon orientation will now follow the controller
+                    // *** Add code to make the cannon pivot and move ***
+                    cannonHandle.transform.position = trackedController.transform.position;
+                    //cannonPivot.transform.LookAt(trackedController.transform.position); // the cannon orientation will now follow the controller
                 }
             }
         }

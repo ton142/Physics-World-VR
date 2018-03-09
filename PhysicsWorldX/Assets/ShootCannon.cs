@@ -7,6 +7,8 @@ public class ShootCannon : MonoBehaviour
     private SteamVR_TrackedObject trackedController;
     private bool controllerInCollider = false; // looks to see if there's a controller in the cannon handle area or not
 
+    private Transform cannonPivot;
+
     void Start()
     {
     }
@@ -43,12 +45,13 @@ public class ShootCannon : MonoBehaviour
                 } */
 
                 // if we press the controller trigger, the cannon will pivot around our controller
-                else if (device.GetTouch(SteamVR_Controller.ButtonMask.Trigger))
+                if (device.GetTouch(SteamVR_Controller.ButtonMask.Trigger))
                 {
                     cannonPivot.transform.LookAt(trackedController.transform.position); // the cannon orientation will now follow the controller
                 }
             }
         }
+    }
         // tells us we have a controller that entered the collider area
         void OnTriggerEnter(Collider other)
         {
@@ -69,4 +72,3 @@ public class ShootCannon : MonoBehaviour
             }
         }
     }
-}

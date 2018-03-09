@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Cannon : MonoBehaviour
+public class RotateBase : MonoBehaviour
 {
 
     public GameObject ballPrefab; // the prefab of the ball spawned everytime
@@ -98,7 +98,7 @@ public class Cannon : MonoBehaviour
                 } */
 
                 // if we press the controller trigger, the cannon will pivot around our controller
-                else if (device.GetTouch(SteamVR_Controller.ButtonMask.Trigger))
+                if (device.GetTouch(SteamVR_Controller.ButtonMask.Trigger))
                 {
                     // *** REWRITE THIS CODE ***
                     cannonPivot.transform.LookAt(trackedController.transform.position); // the cannon orientation will now follow the controller
