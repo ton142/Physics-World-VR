@@ -7,15 +7,15 @@ public class Cannon : MonoBehaviour
 
     public GameObject ballPrefab; // the prefab of the ball spawned everytime
     public GameObject ballSpawnPoint; // the parent of the ball object where the ball will spawn
-    public GameObject ballExitPoint;
+    public GameObject ballExitPoint; // the end of the cannon
 
     public GameObject cannonHandle;
+    private Vector3 cannonHandleStartPosition; // the position the handle needs to return to after releasing it 
     
-    private Vector3 endOfCannon; // the world space position the ball leaves the cannon
-
     public GameObject cannonPivot; // the point that acts as the pivot for the cannon
-
-    //private Vector3 cannonStartPosition; // the position the slingshot object needs to return to
+    private Vector3 cannonPivotStartPosition; // the starting transform of the cannon
+    //private Vector3 cannonPivotStartRotation; // the starting rotation of the cannon
+    
     private GameObject currentBall; // the current ball in the slingshot
     private bool readyforReload = true; // true if there is no ball currently in the cannon 
 
@@ -23,8 +23,9 @@ public class Cannon : MonoBehaviour
     private bool controllerInCannonHandle = false; // looks to see if there's a controller in the cannon handle area or not
 
     // variables to keep track of the initial velocity and angle of the ball
-    private float BASE_VELOCITY = 5f;
+    private float BASE_VELOCITY = 30f;
     private Vector3 shootDirection;
+    private float extraVelocity; // extra velocity to the ball based on how far the handle is pulled back
 
     // private variables for the UI display, use helper functions below to get the values
     private float shootAngle;
@@ -33,7 +34,7 @@ public class Cannon : MonoBehaviour
     // helper functions to get private variables for the UI display
     float getShootAngle()
     {
-            return Vector3.Angle(Vector3.zero, shootDirection); // the angle parallel to the ground the ball flies out at
+        return Vector3.Angle(Vector3.zero, shootDirection); // the angle parallel to the ground the ball flies out at
     }
 
     float getShootVelocity()
@@ -55,15 +56,15 @@ public class Cannon : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        endOfCannon = ballExitPoint.transform.position;
-
-        //slingshotStartPosition = slingshotGameObject.transform.position; // records the position of the slingshot when the game first starts
+        // logging the original transforms of the cannon so we can snap back to these positions 
+        cannonHandleStartPosition = cannonHandle.transform.position; 
+        cannonPivotStartPosition = cannonPivot.transform.position;
+        //cannonPivotStartRotation = cannonPivot.transform.rotation;
     }
 
     // Update is called once per frame
     void Update()
     {
-
         // reloads the ball in the slingshot if there is not one already
         if (readyforReload)
         {
@@ -74,7 +75,14 @@ public class Cannon : MonoBehaviour
         }
 
         //points the forward direction of the ball towards the cannon exit point
-        currentBall.transform.LookAt(endOfCannon);
+        currentBall.transform.LookAt(ballExitPoint.transform.position);
+
+        
+        // record how far the handle has been pulled back and square it
+        float handleDistance = (cannonHandle.transform.position - cannonHandleStartPosition).magnitude;
+        extraVelocity = Mathf.Pow(handleDistance * 5, 1.5f);
+
+        Debug.Log("Distance pulled: " + handleDistance + ", extraVelocity: " + extraVelocity);
 
         // changing how the slingshot behaves by making different inputs on the controller 
         if (trackedController != null) // checks to make sure we have a controller that has entered the cannon handle collider area
@@ -83,24 +91,31 @@ public class Cannon : MonoBehaviour
             if (controllerInCannonHandle)
             {
                 
-                shootDirection = (endOfCannon - currentBall.transform.position); // the direction the ball flies out at
+                shootDirection = (ballExitPoint.transform.position - ballSpawnPoint.transform.position); // the direction the ball flies out at
                 shootVelocity = (BASE_VELOCITY * shootDirection.magnitude); // the velocity the ball will fly out at
                 
                 // if we release the trigger, the slingshot will reset to its original position
                 if (device.GetTouchUp(SteamVR_Controller.ButtonMask.Trigger))
                 {
-                    // this code resets the "trigger variables" so the ball can be reloaded etc
+
+                    // resets the "trigger variables" so the ball can be reloaded etc
                     readyforReload = true;
                     controllerInCannonHandle = false;
 
                     // Vector3 ballPosition = currentBall.transform.position; 
-                    //slingshotGameObject.transform.position = slingshotStartPosition; // slingshot is reset into start position
-                    currentBall.transform.parent = null; // "frees" the ball from the slingshot
+                    cannonHandle.transform.position = cannonHandleStartPosition; // handle is reset into start position
+                    cannonPivot.transform.position = cannonPivotStartPosition; // position and rotation of cannon is reset into start position
+                    //cannonPivot.transform.rotation = cannonPivotStartRotation;
 
-                    // this code adds the velocity to the ball to send it flying
+                    currentBall.transform.parent = null; // "frees" the ball from the cannon
+                    
+                    //puts the ball at the end of cannon and add the velocity to the ball to send it flying
+                    currentBall.transform.position = ballExitPoint.transform.position;
                     Rigidbody rigidbody = currentBall.GetComponent<Rigidbody>();
-                    rigidbody.velocity = shootDirection * shootVelocity;
                     rigidbody.useGravity = true;
+                    rigidbody.velocity = shootDirection * (shootVelocity + extraVelocity);
+
+                    
 
                 } 
 
@@ -109,7 +124,7 @@ public class Cannon : MonoBehaviour
                 {
                     // *** Add code to make the cannon pivot and move ***
                     cannonHandle.transform.position = trackedController.transform.position;
-                    //cannonPivot.transform.LookAt(trackedController.transform.position); // the cannon orientation will now follow the controller
+                    cannonPivot.transform.LookAt(trackedController.transform.position); // the cannon orientation will now follow the controller
                 }
             }
         }
@@ -123,6 +138,7 @@ public class Cannon : MonoBehaviour
         if (trackedController != null)
         {
             controllerInCannonHandle = true;
+            Debug.Log("Controller entered cannon handle collider");
         }
     }
 
@@ -133,6 +149,7 @@ public class Cannon : MonoBehaviour
         if (trackedController != null)
         {
             controllerInCannonHandle = false;
+            Debug.Log("Controller exited cannon handle collider");
         }
     }
 }
