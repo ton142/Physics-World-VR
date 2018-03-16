@@ -13,9 +13,7 @@ public class Cannon : MonoBehaviour
     private Vector3 cannonHandleStartPosition; // the position the handle needs to return to after releasing it 
     
     public GameObject cannonPivot; // the point that acts as the pivot for the cannon
-    private Vector3 cannonPivotStartPosition; // the starting transform of the cannon
-    //private Vector3 cannonPivotStartRotation; // the starting rotation of the cannon
-    
+         
     private GameObject currentBall; // the current ball in the slingshot
     private bool readyforReload = true; // true if there is no ball currently in the cannon 
 
@@ -39,13 +37,13 @@ public class Cannon : MonoBehaviour
 
     float getShootVelocity()
     {
-        return shootVelocity;
+        return shootVelocity + extraVelocity;
     }
 
     float getHorizontalPosition()
     {
         // returns length of vector after it is projected onto the ground plane
-        return (Vector3.ProjectOnPlane((currentBall.transform.position - ballSpawnPoint.transform.position), Vector3.up)).magnitude;
+        return (Vector3.ProjectOnPlane((currentBall.transform.position - ballExitPoint.transform.position), Vector3.up)).magnitude;
     }
 
     float getVerticalPosition()
@@ -57,9 +55,8 @@ public class Cannon : MonoBehaviour
     void Start()
     {
         // logging the original transforms of the cannon so we can snap back to these positions 
-        cannonHandleStartPosition = cannonHandle.transform.position; 
-        cannonPivotStartPosition = cannonPivot.transform.position;
-        //cannonPivotStartRotation = cannonPivot.transform.rotation;
+        cannonHandleStartPosition = cannonHandle.transform.position;
+        
     }
 
     // Update is called once per frame
@@ -104,9 +101,7 @@ public class Cannon : MonoBehaviour
 
                     // Vector3 ballPosition = currentBall.transform.position; 
                     cannonHandle.transform.position = cannonHandleStartPosition; // handle is reset into start position
-                    cannonPivot.transform.position = cannonPivotStartPosition; // position and rotation of cannon is reset into start position
-                    //cannonPivot.transform.rotation = cannonPivotStartRotation;
-
+                    cannonPivot.transform.LookAt(cannonHandleStartPosition); // rotation of cannon is reset into start position
                     currentBall.transform.parent = null; // "frees" the ball from the cannon
                     
                     //puts the ball at the end of cannon and add the velocity to the ball to send it flying
