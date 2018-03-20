@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro; // to use the plugin text editor TextMeshPro (it renders text much nicer than default unity text)
 
 public class Cannon : MonoBehaviour
 {
@@ -25,32 +26,14 @@ public class Cannon : MonoBehaviour
     private Vector3 shootDirection;
     private float extraVelocity; // extra velocity to the ball based on how far the handle is pulled back
 
+    //////////////////// UI VARIABLES //////////////////
+
+    public TMP_Text shootUI; // to display the initial velocity and angles
+
     // private variables for the UI display, use helper functions below to get the values
     private float shootAngle;
     private float shootVelocity;
-
-    // helper functions to get private variables for the UI display
-    float getShootAngle()
-    {
-        return Vector3.Angle(Vector3.zero, shootDirection); // the angle parallel to the ground the ball flies out at
-    }
-
-    float getShootVelocity()
-    {
-        return shootVelocity + extraVelocity;
-    }
-
-    float getHorizontalPosition()
-    {
-        // returns length of vector after it is projected onto the ground plane
-        return (Vector3.ProjectOnPlane((currentBall.transform.position - ballExitPoint.transform.position), Vector3.up)).magnitude;
-    }
-
-    float getVerticalPosition()
-    {
-        return currentBall.transform.position.y;
-    }
-
+     
     // Use this for initialization
     void Start()
     {
@@ -60,7 +43,7 @@ public class Cannon : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         // reloads the ball in the slingshot if there is not one already
         if (readyforReload)
@@ -124,6 +107,7 @@ public class Cannon : MonoBehaviour
             }
         }
 
+        SetShootUI();
     }
 
     // tells us we have a controller that entered the cannon trigger collider area
@@ -147,4 +131,35 @@ public class Cannon : MonoBehaviour
             Debug.Log("Controller exited cannon handle collider");
         }
     }
+
+    ////////////////// UI FUNCTIONS ///////////////// 
+
+    void SetShootUI ()
+    {
+        shootUI.text = "initial velocity: " + getShootVelocity() + "\n" + "initial angle: " + getShootAngle();
+    } 
+
+    // helper functions to get private variables for the UI display
+    double getShootAngle()
+    {
+        float myAngle = Vector3.Angle(shootDirection, Vector3.ProjectOnPlane(shootDirection, Vector3.up)); // the angle parallel to the ground the ball flies out at
+        return System.Math.Round(myAngle, 2);
+    }
+
+    double getShootVelocity()
+    {      
+        return System.Math.Round(shootVelocity + extraVelocity, 2); // return the velocity rounded to 2 integers
+    }
+
+    float getHorizontalPosition()
+    {
+        // returns length of vector after it is projected onto the ground plane
+        return (Vector3.ProjectOnPlane((currentBall.transform.position - ballExitPoint.transform.position), Vector3.up)).magnitude;
+    }
+
+    float getVerticalPosition()
+    {
+        return currentBall.transform.position.y;
+    }
+
 }

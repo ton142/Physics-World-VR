@@ -6,7 +6,7 @@ using TMPro;
 
 public class UIScript : MonoBehaviour {
 
-    private TMP_Text myText;
+    public TMP_Text myText;
 
     private float shootVelocity;
     private float shootAngle;
@@ -15,7 +15,6 @@ public class UIScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        myText = gameObject.GetComponent<TMP_Text>();
         
     }
 	
