@@ -33,7 +33,9 @@ public class Cannon : MonoBehaviour
     // private variables for the UI display, use helper functions below to get the values
     private float shootAngle;
     private float shootVelocity;
-     
+
+    //////////////////// OUR FUNCTIONS //////////////////
+
     // Use this for initialization
     void Start()
     {
