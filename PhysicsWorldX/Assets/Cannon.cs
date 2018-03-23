@@ -59,12 +59,12 @@ public class Cannon : MonoBehaviour
         //points the forward direction of the ball towards the cannon exit point
         currentBall.transform.LookAt(ballExitPoint.transform.position);
 
-        
+
         // record how far the handle has been pulled back and square it
         float handleDistance = (cannonHandle.transform.position - cannonHandleStartPosition).magnitude;
-        extraVelocity = Mathf.Pow(handleDistance * 5, 1.5f);
+        extraVelocity = Mathf.Pow(handleDistance * 10, 2f);
 
-        Debug.Log("Distance pulled: " + handleDistance + ", extraVelocity: " + extraVelocity);
+        //Debug.Log("Distance pulled: " + handleDistance + ", extraVelocity: " + extraVelocity);
 
         // changing how the slingshot behaves by making different inputs on the controller 
         if (trackedController != null) // checks to make sure we have a controller that has entered the cannon handle collider area
@@ -138,7 +138,7 @@ public class Cannon : MonoBehaviour
 
     void SetShootUI ()
     {
-        shootUI.text = "initial velocity: " + getShootVelocity() + "\n" + "initial angle: " + getShootAngle();
+        shootUI.text = "initial velocity: " + getShootVelocity() + " m/s" + "\n" + "initial angle: " + getShootAngle() + " °";
     } 
 
     // helper functions to get private variables for the UI display

@@ -14,18 +14,19 @@ public class CannonBall : MonoBehaviour {
 	void Start () {
 		
 	}
-	
+	/*
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 		if (hasExploded) {
             Explode();
             hasExploded = true;
         }
 	}
+    */
 
-    void Explode()
+    public void Explode()
     {
-        Debug.Log("Cannon exploded");
+        Debug.Log("Cannonball exploded");
 
         // show explosion effect
         Instantiate(explosionEffect, transform.position, transform.rotation);
