@@ -5,7 +5,7 @@ using TMPro; // to use the plugin text editor TextMeshPro (it renders text much 
 
 public class Cannon : MonoBehaviour
 {
-
+    //////////////////// BALL AND CANNON VARIABLES //////////////////
     public GameObject ballPrefab; // the prefab of the ball spawned everytime
     public GameObject ballSpawnPoint; // the parent of the ball object where the ball will spawn
     public GameObject ballExitPoint; // the end of the cannon
@@ -17,18 +17,32 @@ public class Cannon : MonoBehaviour
          
     private GameObject currentBall; // the current ball in the slingshot
     private bool readyforReload = true; // true if there is no ball currently in the cannon 
-
-    private SteamVR_TrackedObject trackedController;
-    private bool controllerInCannonHandle = false; // looks to see if there's a controller in the cannon handle area or not
+    
+    private TrailRenderer ballTrail; // the trail the ball leaves
 
     // variables to keep track of the initial velocity and angle of the ball
     private float BASE_VELOCITY = 30f;
     private Vector3 shootDirection;
     private float extraVelocity; // extra velocity to the ball based on how far the handle is pulled back
 
+    //////////////////// CONTROLLER VARIABLES //////////////////
+
+    private SteamVR_TrackedObject trackedController;
+    private bool controllerInCannonHandle = false; // looks to see if there's a controller in the cannon handle area or not
+
+    //////////////////// TUTORIAL VARIABLES //////////////////
+
+    private bool firstTutorial;
+    private bool secondTutorial;
+
+
     //////////////////// UI VARIABLES //////////////////
 
     public TMP_Text shootUI; // to display the initial velocity and angles
+
+
+    public TMP_Text messageField;   //text for tutorial
+    public TMP_Text messageField2;  //text for 2nd tutorial
 
     // private variables for the UI display, use helper functions below to get the values
     private float shootAngle;
@@ -41,6 +55,9 @@ public class Cannon : MonoBehaviour
     {
         // logging the original transforms of the cannon so we can snap back to these positions 
         cannonHandleStartPosition = cannonHandle.transform.position;
+
+        firstTutorial = true;
+        secondTutorial = false;
         
     }
 
@@ -51,9 +68,27 @@ public class Cannon : MonoBehaviour
         if (readyforReload)
         {
             currentBall = Instantiate(ballPrefab); //creates a ball
+            ballTrail = currentBall.GetComponent<TrailRenderer>(); // the trail the current ball leaves
+
             currentBall.transform.parent = ballSpawnPoint.transform; // parents the ball to the spawn point
             currentBall.transform.localPosition = Vector3.zero; // puts the position of the ball to the position of the slingshot (the parent) 
             readyforReload = false; // now there is already a ball in the slingshot so we turn the boolean false 
+         
+        }
+        if (firstTutorial == true)
+        {
+            messageField.enabled = true;
+            messageField2.enabled = false;
+        }
+        else if(secondTutorial == true)
+        {
+            messageField.enabled = false;
+            messageField2.enabled = true;
+        }
+        else
+        {
+            messageField.enabled = false;
+            messageField2.enabled = false;
         }
 
         //points the forward direction of the ball towards the cannon exit point
@@ -75,7 +110,8 @@ public class Cannon : MonoBehaviour
                 
                 shootDirection = (ballExitPoint.transform.position - ballSpawnPoint.transform.position); // the direction the ball flies out at
                 shootVelocity = (BASE_VELOCITY * shootDirection.magnitude); // the velocity the ball will fly out at
-                
+
+                // shooting script
                 // if we release the trigger, the slingshot will reset to its original position
                 if (device.GetTouchUp(SteamVR_Controller.ButtonMask.Trigger))
                 {
@@ -83,6 +119,7 @@ public class Cannon : MonoBehaviour
                     // resets the "trigger variables" so the ball can be reloaded etc
                     readyforReload = true;
                     controllerInCannonHandle = false;
+                    ballTrail.enabled = true;
 
                     // Vector3 ballPosition = currentBall.transform.position; 
                     cannonHandle.transform.position = cannonHandleStartPosition; // handle is reset into start position
@@ -95,7 +132,11 @@ public class Cannon : MonoBehaviour
                     rigidbody.useGravity = true;
                     rigidbody.velocity = shootDirection * (shootVelocity + extraVelocity);
 
-                    
+                    if (secondTutorial == true)
+                    {
+                        firstTutorial = false;
+                        secondTutorial = false;
+                    }
 
                 } 
 
@@ -105,6 +146,12 @@ public class Cannon : MonoBehaviour
                     // *** Add code to make the cannon pivot and move ***
                     cannonHandle.transform.position = trackedController.transform.position;
                     cannonPivot.transform.LookAt(trackedController.transform.position); // the cannon orientation will now follow the controller
+                    if (firstTutorial == true)
+                    {
+                        firstTutorial = false;
+                        secondTutorial = true;
+                    }
+            
                 }
             }
         }
@@ -120,6 +167,7 @@ public class Cannon : MonoBehaviour
         {
             controllerInCannonHandle = true;
             Debug.Log("Controller entered cannon handle collider");
+
         }
     }
 

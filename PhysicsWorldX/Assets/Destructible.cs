@@ -17,6 +17,8 @@ public class Destructible : MonoBehaviour {
 
     //////////////////// START OF FUNCTIONS //////////////////
 
+    
+
     private void FixedUpdate()
     {
         xDistance = Vector3.Magnitude(Vector3.ProjectOnPlane(transform.position - cannonBallInitialPoint.transform.position, Vector3.up)); // the length of the distance vector after it is projected onto the ground plane

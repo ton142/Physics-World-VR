@@ -20,7 +20,7 @@ public class PlaneController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         // reset beginning transform to the ground
-        transform.position = new Vector3(0, 1.5f, 0);
+        //transform.position = new Vector3(0, 1.5f, 0);
         myPlane = GetComponent<Rigidbody>();
         
 	}
