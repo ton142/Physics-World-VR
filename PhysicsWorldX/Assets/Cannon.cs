@@ -10,16 +10,17 @@ public class Cannon : MonoBehaviour
     public GameObject ballSpawnPoint; // the parent of the ball object where the ball will spawn
     public GameObject ballExitPoint; // the end of the cannon
 
-    public GameObject cannonHandle;
-    private Vector3 cannonHandleStartPosition; // the position the handle needs to return to after releasing it 
-    
-    public GameObject cannonPivot; // the point that acts as the pivot for the cannon
-         
     private GameObject currentBall; // the current ball in the slingshot
-    private bool readyforReload = true; // true if there is no ball currently in the cannon 
-    
+    private Rigidbody ballRigidbody; // the rigidbody of our current ball
     private TrailRenderer ballTrail; // the trail the ball leaves
 
+
+    public GameObject cannonHandle;
+    private Vector3 cannonHandleStartPosition; // the position the handle needs to return to after releasing it 
+    public GameObject cannonPivot; // the point that acts as the pivot for the cannon
+         
+    private bool readyforReload = true; // true if there is no ball currently in the cannon 
+    
     // variables to keep track of the initial velocity and angle of the ball
     private float BASE_VELOCITY = 30f;
     private Vector3 shootDirection;
@@ -39,7 +40,20 @@ public class Cannon : MonoBehaviour
     //////////////////// UI VARIABLES //////////////////
 
     public TMP_Text shootUI; // to display the initial velocity and angles
+    
+    // to display the current variables of the physics forumlas
+    public TMP_Text xVelocity;
+    public TMP_Text yVelocity;
+    public TMP_Text xDisplacement;
+    public TMP_Text yDisplacement;
+    public float velocityTimer;
 
+    // add a timer that starts when the ball is released
+    // velocityTimer = 0;
+
+
+    // in fixedupdate:
+    // velocityTimer += Time.deltatime;
 
     public TMP_Text messageField;   //text for tutorial
     public TMP_Text messageField2;  //text for 2nd tutorial
@@ -48,6 +62,8 @@ public class Cannon : MonoBehaviour
     private float shootAngle;
     private float shootVelocity;
 
+
+
     //////////////////// OUR FUNCTIONS //////////////////
 
     // Use this for initialization
@@ -55,6 +71,9 @@ public class Cannon : MonoBehaviour
     {
         // logging the original transforms of the cannon so we can snap back to these positions 
         cannonHandleStartPosition = cannonHandle.transform.position;
+
+
+        setTextFormula();
 
         firstTutorial = true;
         secondTutorial = false;
@@ -68,6 +87,7 @@ public class Cannon : MonoBehaviour
         if (readyforReload)
         {
             currentBall = Instantiate(ballPrefab); //creates a ball
+            ballRigidbody = currentBall.GetComponent<Rigidbody>(); // reference to the rigidbody of the current ball
             ballTrail = currentBall.GetComponent<TrailRenderer>(); // the trail the current ball leaves
 
             currentBall.transform.parent = ballSpawnPoint.transform; // parents the ball to the spawn point
@@ -120,6 +140,7 @@ public class Cannon : MonoBehaviour
                     readyforReload = true;
                     controllerInCannonHandle = false;
                     ballTrail.enabled = true;
+                    setTextFormula();
 
                     // Vector3 ballPosition = currentBall.transform.position; 
                     cannonHandle.transform.position = cannonHandleStartPosition; // handle is reset into start position
@@ -128,9 +149,8 @@ public class Cannon : MonoBehaviour
                     
                     //puts the ball at the end of cannon and add the velocity to the ball to send it flying
                     currentBall.transform.position = ballExitPoint.transform.position;
-                    Rigidbody rigidbody = currentBall.GetComponent<Rigidbody>();
-                    rigidbody.useGravity = true;
-                    rigidbody.velocity = shootDirection * (shootVelocity + extraVelocity);
+                    ballRigidbody.useGravity = true;
+                    ballRigidbody.velocity = shootDirection * (shootVelocity + extraVelocity);
 
                     if (secondTutorial == true)
                     {
@@ -146,6 +166,8 @@ public class Cannon : MonoBehaviour
                     // *** Add code to make the cannon pivot and move ***
                     cannonHandle.transform.position = trackedController.transform.position;
                     cannonPivot.transform.LookAt(trackedController.transform.position); // the cannon orientation will now follow the controller
+                    setTextDynamic();
+
                     if (firstTutorial == true)
                     {
                         firstTutorial = false;
@@ -157,6 +179,7 @@ public class Cannon : MonoBehaviour
         }
 
         SetShootUI();
+        
     }
 
     // tells us we have a controller that entered the cannon trigger collider area
@@ -189,6 +212,8 @@ public class Cannon : MonoBehaviour
         shootUI.text = "initial velocity: " + getShootVelocity() + " m/s" + "\n" + "initial angle: " + getShootAngle() + " °";
     } 
 
+
+
     // helper functions to get private variables for the UI display
     double getShootAngle()
     {
@@ -212,4 +237,41 @@ public class Cannon : MonoBehaviour
         return currentBall.transform.position.y;
     }
 
+    void setTextFormula()
+    {
+        xVelocity.text = "<#FF0000>v<sub>x</sub></color> = <#FF00FF>v<sub>0</sub></color>cos<#FFFFFF>θ</color>";
+        yVelocity.text = "<#0000FF>v<sub>y</sub></color> = <#FF00FF>v<sub>0</sub></color>sin<#FFFFFF>θ</color> - gt";
+        xDisplacement.text = "<#FF0000>x</color> = <#FF00FF>v<sub>0</sub></color>cos<#FFFFFF>θ</color>t";
+        yDisplacement.text = "<#0000FF>y</color> = <#FF00FF>v<sub>0</sub></color>sin<#FFFFFF>θ</color>t - ½gt²";
+    }
+
+    void setTextDynamic()
+    {
+        xVelocity.text = "<#FF0000>" + getHorizontalVelocity() + "</color> = <#FF00FF>" + getShootVelocity() + "</color>cos" + "<#FFFFFF>" + getShootAngle() + "</color>";
+        yVelocity.text = "<#0000FF>" + getVerticalVelocity() + "</color> = <#FF00FF>" + getShootVelocity() + "</color>sin" + "<#FFFFFF>" + getShootAngle() + "</color>" + " - gt";
+        xDisplacement.text = "<#FF0000>" + getHorizontalPosition() + "</color> = <#FF00FF>" + getShootVelocity() + "</color>cos" + "<#FFFFFF>" + getShootAngle() + "</color>" + "t";
+        yDisplacement.text = "<#0000FF>" + getVerticalPosition() + "</color> = <#FF00FF>" + getShootVelocity() + "</color>sin" + "<#FFFFFF>" + getShootAngle() + "</color>" + "t - ½gt²";
+    }
+
+    double getRigidbodyInitialVelocity()
+    {
+        return System.Math.Round(ballRigidbody.velocity.magnitude, 2); // return the velocity rounded to 2 integers
+    }
+
+    double getHorizontalVelocity()
+    {
+        return System.Math.Round(ballRigidbody.velocity.x, 2); // return the velocity rounded to 2 integers
+    }
+
+    double getVerticalVelocity()
+    {
+        return System.Math.Round(ballRigidbody.velocity.y, 2); // return the velocity rounded to 2 integers
+    }
+
+    double getTimeInSeconds()
+    {
+        return System.Math.Round(velocityTimer, 2); // return the time rounded to 2 integers
+    }
+
+    
 }
