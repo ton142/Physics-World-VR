@@ -243,11 +243,11 @@ public class Cannon : MonoBehaviour
 
     void setTextFormula()
     {
-        xVelocity.text = "<#FF0000>v<sub>x</sub></color> = <#FF00FF>v<sub>0</sub></color>cos<#FFFFFF>θ</color>";
-        yVelocity.text = "<#0000FF>v<sub>y</sub></color> = <#FF00FF>v<sub>0</sub></color>sin<#FFFFFF>θ</color> - gt";
+        xVelocity.text = "<#FF0000>v<sub>x</sub></color> = <#FF00FF>v<sub>0</sub></color>cos<#FFFFFF>(angle*pi/180)</color>";
+        yVelocity.text = "<#0000FF>v<sub>y</sub></color> = <#FF00FF>v<sub>0</sub></color>sin<#FFFFFF>(angle*pi/180)</color>";
 
-        initialVelocity.text = "<#FF0000>v<sub>0</sub></color> =" + getShootVelocity() + " m /s";
-        initialAngle.text = "angle =" + getShootAngleDegrees() + " °";
+        initialVelocity.text = "<#FF0000>v<sub>0</sub></color> =" + 0 + " m /s";
+        initialAngle.text = "angle =" + 0 + " °";
     }
     //xDisplacement.text = "<#FF0000>x</color> = <#FF00FF>v<sub>0</sub></color>cos<#FFFFFF>θ</color>t";
     //yDisplacement.text = "<#0000FF>y</color> = <#FF00FF>v<sub>0</sub></color>sin<#FFFFFF>θ</color>t - ½gt²";
@@ -255,8 +255,8 @@ public class Cannon : MonoBehaviour
 
     void setTextDynamic()
     {
-        xVelocity.text = "<#FF0000>v<sub>x</sub></color>" + "= <#FF00FF>" + getShootVelocity() + "</color>" + "<#FFFFFF>" + Mathf.Cos((float)getShootAngleRadians()) + "</color>";
-        yVelocity.text = "<#0000FF>v<sub>y</sub></color>" + "= <#FF00FF>" + getShootVelocity() + "</color>" + "<#FFFFFF>" + Mathf.Sin((float)getShootAngleRadians()) + "</color>" + " - gt";
+        xVelocity.text = "<#FF0000>v<sub>x</sub></color>" + "= <#FF00FF>" + getShootVelocity() + "</color>" + "*<#FFFFFF>" + Mathf.Cos((float)getShootAngleRadians()) + "</color>";
+        yVelocity.text = "<#0000FF>v<sub>y</sub></color>" + "= <#FF00FF>" + getShootVelocity() + "</color>" + "*<#FFFFFF>" + Mathf.Sin((float)getShootAngleRadians()) + "</color>";
         initialVelocity.text = "<#FF0000>v<sub>0</sub></color> =" + getShootVelocity() + " m /s";
         initialAngle.text = "angle =" + getShootAngleDegrees() + " °";
 
