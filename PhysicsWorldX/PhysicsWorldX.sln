@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2017
+# Visual Studio 2015
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhysicsWorldX", "PhysicsWorldX.csproj", "{B61D5933-9A82-0D6A-1DBD-F66E89018591}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhysicsWorldX.Editor", "PhysicsWorldX.Editor.csproj", "{2C434B60-513D-29A1-33E7-2DF0CC1E58DD}"

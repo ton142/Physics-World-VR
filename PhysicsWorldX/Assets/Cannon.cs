@@ -44,8 +44,8 @@ public class Cannon : MonoBehaviour
     // to display the current variables of the physics forumlas
     public TMP_Text xVelocity;
     public TMP_Text yVelocity;
-    public TMP_Text xDisplacement;
-    public TMP_Text yDisplacement;
+    public TMP_Text initialVelocity;
+    public TMP_Text initialAngle;
     public float velocityTimer;
 
     // add a timer that starts when the ball is released
@@ -209,13 +209,17 @@ public class Cannon : MonoBehaviour
 
     void SetShootUI ()
     {
-        shootUI.text = "initial velocity: " + getShootVelocity() + " m/s" + "\n" + "initial angle: " + getShootAngle() + " °";
+       // shootUI.text = "initial velocity: " + getShootVelocity() + " m/s" + "\n" + "initial angle: " + getShootAngle() + " °";
     } 
 
-
-
     // helper functions to get private variables for the UI display
-    double getShootAngle()
+    double getShootAngleRadians()
+    {
+        float myAngle = (Vector3.Angle(shootDirection, Vector3.ProjectOnPlane(shootDirection, Vector3.up))) * Mathf.Deg2Rad; // the angle parallel to the ground the ball flies out at
+        return System.Math.Round(myAngle, 2);
+    }
+
+    double getShootAngleDegrees()
     {
         float myAngle = Vector3.Angle(shootDirection, Vector3.ProjectOnPlane(shootDirection, Vector3.up)); // the angle parallel to the ground the ball flies out at
         return System.Math.Round(myAngle, 2);
@@ -241,16 +245,23 @@ public class Cannon : MonoBehaviour
     {
         xVelocity.text = "<#FF0000>v<sub>x</sub></color> = <#FF00FF>v<sub>0</sub></color>cos<#FFFFFF>θ</color>";
         yVelocity.text = "<#0000FF>v<sub>y</sub></color> = <#FF00FF>v<sub>0</sub></color>sin<#FFFFFF>θ</color> - gt";
-        xDisplacement.text = "<#FF0000>x</color> = <#FF00FF>v<sub>0</sub></color>cos<#FFFFFF>θ</color>t";
-        yDisplacement.text = "<#0000FF>y</color> = <#FF00FF>v<sub>0</sub></color>sin<#FFFFFF>θ</color>t - ½gt²";
+
+        initialVelocity.text = "<#FF0000>v<sub>0</sub></color> =" + getShootVelocity() + " m /s";
+        initialAngle.text = "angle =" + getShootAngleDegrees() + " °";
     }
+    //xDisplacement.text = "<#FF0000>x</color> = <#FF00FF>v<sub>0</sub></color>cos<#FFFFFF>θ</color>t";
+    //yDisplacement.text = "<#0000FF>y</color> = <#FF00FF>v<sub>0</sub></color>sin<#FFFFFF>θ</color>t - ½gt²";
+
 
     void setTextDynamic()
     {
-        xVelocity.text = "<#FF0000>" + getHorizontalVelocity() + "</color> = <#FF00FF>" + getShootVelocity() + "</color>cos" + "<#FFFFFF>" + getShootAngle() + "</color>";
-        yVelocity.text = "<#0000FF>" + getVerticalVelocity() + "</color> = <#FF00FF>" + getShootVelocity() + "</color>sin" + "<#FFFFFF>" + getShootAngle() + "</color>" + " - gt";
-        xDisplacement.text = "<#FF0000>" + getHorizontalPosition() + "</color> = <#FF00FF>" + getShootVelocity() + "</color>cos" + "<#FFFFFF>" + getShootAngle() + "</color>" + "t";
-        yDisplacement.text = "<#0000FF>" + getVerticalPosition() + "</color> = <#FF00FF>" + getShootVelocity() + "</color>sin" + "<#FFFFFF>" + getShootAngle() + "</color>" + "t - ½gt²";
+        xVelocity.text = "<#FF0000>v<sub>x</sub></color>" + "= <#FF00FF>" + getShootVelocity() + "</color>" + "<#FFFFFF>" + Mathf.Cos((float)getShootAngleRadians()) + "</color>";
+        yVelocity.text = "<#0000FF>v<sub>y</sub></color>" + "= <#FF00FF>" + getShootVelocity() + "</color>" + "<#FFFFFF>" + Mathf.Sin((float)getShootAngleRadians()) + "</color>" + " - gt";
+        initialVelocity.text = "<#FF0000>v<sub>0</sub></color> =" + getShootVelocity() + " m /s";
+        initialAngle.text = "angle =" + getShootAngleDegrees() + " °";
+
+    //xDisplacement.text = "<#FF0000>" + "x" + "</color> = <#FF00FF>" + getShootVelocity() + "</color>cos" + "<#FFFFFF>" + getShootAngle() + "</color>" + "t";
+    //yDisplacement.text = "<#0000FF>" + "y" + "</color> = <#FF00FF>" + getShootVelocity() + "</color>sin" + "<#FFFFFF>" + getShootAngle() + "</color>" + "t - ½gt²";
     }
 
     double getRigidbodyInitialVelocity()
